@@ -209,7 +209,6 @@ export default {
                 data: sendmsg
             }).then(()=>{
                 this.dialogFormVisible = false;
-                this.$refs[fromname].resetFields();
                 this.render();
             }).catch(()=>{
                 console.log("提交失败")
