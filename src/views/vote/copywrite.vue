@@ -81,8 +81,7 @@
     <el-dialog :visible.sync="dialogprogram.dialogprogramVisible" width="400px" center :showClose="dialogprogram.showClo" custom-class="program__dialog" :close-on-click-modal="dialogprogram.closeModal">
         <el-form :model="programFrom" :rules="rules" ref="programFrom" label-position="left" size="mini" @submit.native.prevent>
             <el-form-item label="顺序" 
-            label-width="80px" 
-            prop="rank"
+            label-width="80px"
             :rules="[
                 { required: true, message: '必填'},
                 { type: 'number', message: '顺序必须为数字值'}
@@ -93,8 +92,7 @@
                 </el-col>
             </el-form-item>
             <el-form-item label="分组" 
-            label-width="80px" 
-            prop="groupNum"
+            label-width="80px"
             :rules="[
                 { required: true, message: '必填'},
                 { type: 'number', message: '分组必须为数字值'}
@@ -244,7 +242,6 @@ import { apiUrl } from '../config'
                     this.programId = '';
                     this.upload.showImg = false;
                     this.upload.imgUrl = '';
-                    this.$refs[formName].resetFields();
                     this.renderList();
                   }).catch((err) => {
                       console.log(err)
