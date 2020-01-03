@@ -20,7 +20,7 @@
           text-color="#fff"
           active-text-color="#ffd04b"
           >
-        <el-menu-item index="/copywrite">
+        <el-menu-item index="/program">
           <template slot="title">
             <i class="el-icon-right"></i>
             <span>节目名单</span>
@@ -30,9 +30,17 @@
           <i class="el-icon-menu"></i>
           <span slot="title">特邀用户</span>
         </el-menu-item>
+        <el-menu-item index="/showVotes">
+          <i class="el-icon-menu"></i>
+          <span slot="title">查看票数</span>
+        </el-menu-item>
+        <el-menu-item index="/systemconfig">
+          <i class="el-icon-menu"></i>
+          <span slot="title">系统参数管理</span>
+        </el-menu-item>
         <el-menu-item>
           <i class="el-icon-right"></i>
-          <span slot="title"><a href = 'http://www.baidu.com' class="vote_link">投票地址</a></span>
+          <span slot="title"><a :href = 'voteLink' class="vote_link">投票地址</a></span>
         </el-menu-item>
       </el-menu>
       </el-aside>
@@ -44,12 +52,15 @@
 </template>
 
 <script>
-
+import { voteLink } from './config.js'
 export default {
   data() {
     return {
-    
+      voteLink: ''
     }
+  },
+  beforeCreate () {
+    this.voteLink = voteLink
   },
   methods: {
      async logout() {

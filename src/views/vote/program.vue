@@ -40,15 +40,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="照片"
-        align="center"
-        label-class-name="table_title"
-        >
-        <template slot-scope="scope">
-          <img :src="scope.row.photoUrl">
-        </template>
-      </el-table-column>
-      <el-table-column
         label="队名"
         align="center"
         label-class-name="table_title"
@@ -73,15 +64,19 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            type="danger"
+            type="primary"
             @click="handleEdit(scope.$index, programList)">编辑</el-button>
+          <el-button
+              size="mini"
+              type="danger"
+              @click="handleDel(scope.$index, programList)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-dialog :visible.sync="dialogprogram.dialogprogramVisible" width="400px" center :showClose="dialogprogram.showClo" custom-class="program__dialog" :close-on-click-modal="dialogprogram.closeModal">
         <el-form :model="programFrom" :rules="rules" ref="programFrom" label-position="left" size="mini" @submit.native.prevent>
             <el-form-item label="顺序" 
-            label-width="80px"
+            label-width="80px" 
             :rules="[
                 { required: true, message: '必填'},
                 { type: 'number', message: '顺序必须为数字值'}
@@ -104,30 +99,13 @@
             </el-form-item>
             <el-form-item label="队名" label-width="80px" prop="teamName">
                <el-col :span="20">
-                <el-input v-model.number="programFrom.teamName" auto-complete="off" placeholder="请输入队名(长度不超过8)"></el-input>
+                <el-input v-model="programFrom.teamName" auto-complete="off" placeholder="请输入队名(长度不超过10)"></el-input>
                </el-col>
             </el-form-item>
             <el-form-item label="歌名" label-width="80px" prop="songName">
                 <el-col :span="20">
-                  <el-input v-model.number="programFrom.songName" auto-complete="off" placeholder="请输入歌名"></el-input>
+                  <el-input v-model="programFrom.songName" auto-complete="off" placeholder="请输入歌名"></el-input>
                 </el-col>
-            </el-form-item>
-            <el-form-item label="队伍图片" label-width="80px" prop="photoUrl">
-                  <span>图片要求比例3:2</span>
-                  <el-upload
-                    class="upload-demo"
-                    ref="upload"
-                    :show-file-list="upload.unshow"
-                    :on-success="handleSuccess"
-                    :action="judgeEnvir"
-                    >
-                    <el-button size="small" type="primary">点击上传</el-button>
-                  </el-upload>
-                  
-                <div class="groupImg__box">
-                   <img :src="upload.imgUrl" v-if="upload.showImg">
-                </div>
-                
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -139,9 +117,8 @@
 </template>
 
 <script>
-import { apiUrl } from '../config'
   export default {
-    name:"Copywrite",
+    name:"Program",
     props:{tableInfo:Array},
     data() {
       var trueTeamName = (rule, value, callback) => {
@@ -149,17 +126,10 @@ import { apiUrl } from '../config'
         console.log(num);
         if (value === '') {
           callback(new Error('请输入队名'));
-        }else if(num>7) {
-          callback(new Error('最多8个字'));
+        }else if(num > 10) {
+          callback(new Error('最多10个字'));
         }else{
             callback();
-        }
-      }
-      var truephotoUrl = (rule, value, callback) => {
-        if(this.upload.imgUrl==='') {
-          callback(new Error('请上传队伍图片'));
-        }else{
-          callback();
         }
       }
       return {
@@ -174,27 +144,35 @@ import { apiUrl } from '../config'
           rank: '',
           songName: '',
           teamName:'',
-          photoUrl:'',
           groupNum:'',
         },
         rules: {
           songName:[{required: true, message: '请输入歌名', trigger: 'blur'}],
-          teamName:[{required: true, trigger: 'blur',validator:trueTeamName}],
-          photoUrl:[{required: true,validator:truephotoUrl}],
-        },
-        upload:{
-          unshow:false,
-          autoUpload:false,
-          showImgMessage:false,
-          showImg: false,
-          imgUrl:'',
+          teamName:[{required: true, trigger: 'blur',validator:trueTeamName}]
         },
         programId:'',
       }
     },
    
     methods: {
-
+      handleDel(index, rows) {
+        let programId = rows[index].programId;
+        this.$confirm('确认删除该节目？').then(() => {
+          let url = "admin/program/delete";
+          this.axios({
+            method: 'post',
+            url: url,
+            params: {
+              programId
+            }
+          })
+          .then(() =>{
+             this.renderList();
+          }).catch(() => {
+              
+          })
+        })
+      },
       hideDialog() {
           this.centerDialogVisible = false
       },
@@ -220,13 +198,18 @@ import { apiUrl } from '../config'
         })
       },
       addlist() {
-        this.dialogprogram.dialogprogramVisible = true;
+        this.dialogprogram.dialogprogramVisible = true
+        this.programId = ''
+        this.programFrom.rank = ''
+        this.programFrom.songName = ''
+        this.programFrom.teamName = ''
+        this.programFrom.groupNum = ''
       },
-      submitProgramForm(formName,time) {
+      submitProgramForm(formName,id) {
           this.$refs[formName].validate((valid) => {
               if (valid) {
                   var url ='';
-                  if(time) {
+                  if(id) {
                     url = 'admin/program/update'
                   }else {
                     url = 'admin/program/create'
@@ -240,8 +223,6 @@ import { apiUrl } from '../config'
                   }).then(()=>{
                     this.dialogprogram.dialogprogramVisible = false;
                     this.programId = '';
-                    this.upload.showImg = false;
-                    this.upload.imgUrl = '';
                     this.renderList();
                   }).catch((err) => {
                       console.log(err)
@@ -253,22 +234,16 @@ import { apiUrl } from '../config'
               }
           });
       },
-      handleSuccess(res) {
-          this.upload.showImg = true;
-          this.upload.imgUrl = res.data;
-      },
       sendFromInfo() {
           let rank = this.programFrom.rank;
           let songName = this.programFrom.songName;
           let teamName = this.programFrom.teamName;
-          let photoUrl = this.upload.imgUrl;
           let groupNum = this.programFrom.groupNum;
           let programId = this.programId
           let object = {
                     rank,
                     songName,
                     teamName,
-                    photoUrl,
                     groupNum,
                     programId
                 }
@@ -276,21 +251,16 @@ import { apiUrl } from '../config'
       },
       hideProgramForm(formName) {
         this.dialogprogram.dialogprogramVisible= false;
-        this.upload.imgUrl = '';
-        this.upload.showImg = false;
         this.$refs[formName].resetFields();
         this.programId = '';
       },
       handleEdit(index, rows) {
           this.dialogprogram.dialogprogramVisible= true;
            //前端完成数据回显
-           console.log(rows[index])
            this.programFrom.rank = rows[index].rank;
            this.programFrom.songName = rows[index].songName;
            this.programFrom.teamName = rows[index].teamName;
            this.programFrom.groupNum = rows[index].groupNum;
-           this.upload.showImg = true;
-           this.upload.imgUrl = rows[index].photoUrl;
            this.programId = rows[index].programId;
       },
       
@@ -299,9 +269,6 @@ import { apiUrl } from '../config'
       this.renderList();
     },
     computed: {
-      judgeEnvir() {
-        return apiUrl+"upload/photo"
-      }
     },
   }
 </script>
@@ -343,6 +310,7 @@ import { apiUrl } from '../config'
 
 <style lang="scss" scoped>
 .copywrite__box {
+
     .guest__box__add {
         width:100%;
         padding-bottom:10px;

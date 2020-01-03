@@ -2,6 +2,16 @@
   <div class="guest__box">
     <div class="guest__box__add">
        <el-button type="primary" size="mini" @click="addMenu()">添加</el-button>
+       <el-upload
+         class="upload-file"
+         ref="upload"
+         :show-file-list="unshow"
+         :on-change="fileSuccess"
+         :action="judgeFile"
+         >
+           <el-button size="mini" type="primary">导入</el-button>
+        </el-upload>
+    
     </div>
     <div class="search__box">
         <el-col :span="16">
@@ -32,12 +42,12 @@
             label-class-name="table_title"
            
             >
-            <template scope="scope"><span :class="{redword:scope.row.type=='1'}">{{changeType(scope.row)}}</span></template>
+            <template slot-scope="scope"><span :class="{redword:scope.row.type=='1'}">{{changeType(scope.row)}}</span></template>
         </el-table-column>
         <el-table-column 
             label="操作" 
             label-class-name="table_title">
-            <template slot-scope="scope">
+            <template slot-scope="scope"> 
                 <el-button
                 size="mini"
                 type="primary"
@@ -82,6 +92,7 @@
 </template>
 
 <script>
+import { apiUrl } from '../config'
 export default {
     
   components:{},
@@ -98,6 +109,7 @@ export default {
     }
     return {
         showClo: false,
+        unshow: false,
         closeModal: false,
         centerDialogVisible:false,
         tableData: [],
@@ -125,7 +137,9 @@ export default {
   },
   watch:{},
   computed:{
-
+    judgeFile() {
+       return apiUrl+"person/import"
+     }
   },
   methods:{
         isTel(val) {
@@ -307,6 +321,10 @@ export default {
                     console.log("搜索失败")
                 })
             }
+        },
+        fileSuccess() {
+          this.mobilePage = false;
+          this.render();
         }
   },
     created() {
@@ -349,6 +367,7 @@ export default {
 
 </style>
 <style lang="scss">
+.guest__box {
  .guest__dialog {
     .el-dialog__header {
         display:none;
@@ -357,4 +376,12 @@ export default {
         padding-bottom: 0;
     }
  }
+ .guest__box__add {
+        display: flex;
+        align-items: center;
+        .upload-file {
+          margin-left: 20px;
+        }
+    }
+}
 </style>

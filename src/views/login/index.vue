@@ -79,13 +79,13 @@ export default {
                         }
                     })
                     .then(res => {
-                        if (res.data) {
+                        if (res.data.success) {
                             this.logining = false;
                             sessionStorage.setItem('user', this.ruleForm2.username);
                             this.$router.push({path: '/home'});
                         } else {
                             this.logining = false;
-                            this.$alert('用户名或密码错误!', '提示', {
+                            this.$alert(res.data.msg, '提示', {
                                 confirmButtonText: 'ok'
                             })
                         }
