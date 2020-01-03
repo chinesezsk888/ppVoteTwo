@@ -1,13 +1,13 @@
 <template>
   <div class="copywrite__box">
-   <div class="guest__box__add">
+    <div class="guest__box__add">
        <el-button type="primary" size="mini" @click="addlist()">添加</el-button>
        <el-button type="danger" class="resetbtn" @click="centerDialogVisible = true">重置按钮</el-button>
     </div>
     <el-dialog
       title="重置投票状态&记录"
       :visible.sync="centerDialogVisible"
-      width="20%"
+      width="300px"
       custom-class="tab__dialog"
       center
       >
@@ -59,21 +59,23 @@
       </el-table-column>
       <el-table-column 
       label="操作" 
-      align="center"
+      fixed="right"
       label-class-name="table_title">
         <template slot-scope="scope">
           <el-button
+            class="enitBtn"
             size="mini"
             type="primary"
             @click="handleEdit(scope.$index, programList)">编辑</el-button>
           <el-button
+              class="delBtn"
               size="mini"
               type="danger"
               @click="handleDel(scope.$index, programList)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog :visible.sync="dialogprogram.dialogprogramVisible" width="400px" center :showClose="dialogprogram.showClo" custom-class="program__dialog" :close-on-click-modal="dialogprogram.closeModal">
+    <el-dialog :visible.sync="dialogprogram.dialogprogramVisible" width="350px" center :showClose="dialogprogram.showClo" custom-class="program__dialog" :close-on-click-modal="dialogprogram.closeModal">
         <el-form :model="programFrom" :rules="rules" ref="programFrom" label-position="left" size="mini" @submit.native.prevent>
             <el-form-item label="顺序" 
             label-width="80px" 
@@ -310,7 +312,6 @@
 
 <style lang="scss" scoped>
 .copywrite__box {
-
     .guest__box__add {
         width:100%;
         padding-bottom:10px;
@@ -321,6 +322,12 @@
             right: 50px;
             top: -10px;
         }
+    }
+    .delBtn {
+      margin-left: 0;
+    }
+    .enitBtn {
+       margin-right: 10px;
     }
     .upload-demo {
       position:absolute;

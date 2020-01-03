@@ -2,8 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login/index'
 import Home from '@/views/Home'
-import Copywrite from '@/views/vote/copywrite'
+import Program from '@/views/vote/program'
 import Guest from '@/views/vote/guest'
+import ShowVotes from '@/views/vote/ShowVote'
+import Systemconfig from '@/views/vote/systemconfig'
 
 Vue.use(Router)
  
@@ -17,16 +19,24 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      redirect: '/copywrite',
+      redirect: '/program',
       component: Home,
       children:[
         {
-          path: '/copywrite',
-          component: Copywrite
+          path: '/program',
+          component: Program
         },
         {
           path: '/guest',
           component: Guest
+        },
+        {
+          path: '/showVotes',
+          component: ShowVotes
+        },
+        {
+          path: '/systemconfig',
+          component: Systemconfig
         }
       ]
     }

@@ -15,7 +15,7 @@
     </div>
     <div class="search__box">
         <el-col :span="16">
-          <el-input size="medium" v-model="searchMobile" placeholder="请输入要搜索的手机号" auto-complete="no"></el-input>
+          <el-input size="medium" v-model="searchMobile" placeholder="请输入手机号" auto-complete="no"></el-input>
         </el-col>
         <el-button type="primary" round icon="el-icon-search"  size="small" @click="searchList()">搜索</el-button>
     </div>
@@ -45,16 +45,19 @@
             <template slot-scope="scope"><span :class="{redword:scope.row.type=='1'}">{{changeType(scope.row)}}</span></template>
         </el-table-column>
         <el-table-column 
-            label="操作" 
+            label="操作"
+            fixed="right"
             label-class-name="table_title">
             <template slot-scope="scope"> 
                 <el-button
                 size="mini"
+                class="enitBtn"
                 type="primary"
                 @click="guestMenuEdit(scope.$index, tableData)">编辑</el-button>
                 <el-button
                 size="mini"
                 type="danger"
+                class="delBtn"
                 @click="guestMenuDel(scope.$index, tableData)">删除</el-button>
             </template>
         </el-table-column>
@@ -356,31 +359,37 @@ export default {
     }
     .search__box {
         display:flex;
-        width: 300px;
-        align-items: center;
+        width: 200px;
+        align-items:center;
         justify-content: space-around;
         position: absolute;
-        top: -8px;
+        top: -4px;
         right: 0;
+    }
+    .delBtn {
+      margin-left: 0;
+    }
+    .enitBtn {
+       margin-right: 10px;
     }
 }
 
 </style>
 <style lang="scss">
 .guest__box {
- .guest__dialog {
-    .el-dialog__header {
-        display:none;
+    .guest__dialog {
+       .el-dialog__header {
+           display:none;
+       }
+       .el-dialog__body {
+           padding-bottom: 0;
+       }
     }
-    .el-dialog__body {
-        padding-bottom: 0;
-    }
- }
- .guest__box__add {
+    .guest__box__add {
         display: flex;
         align-items: center;
         .upload-file {
-          margin-left: 20px;
+          margin-left: 10px;
         }
     }
 }
